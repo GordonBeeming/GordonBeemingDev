@@ -1,0 +1,48 @@
+---
+import type { PageModel } from "../lib/schema";
+import Controls from "./Controls.astro";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  projects: PageModel["projects"];
+  techFilters: PageModel["techFilters"];
+}
+
+const { projects, techFilters } = Astro.props;
+const featured = projects.filter((project) => project.featured);
+const rest = projects.filter((project) => !project.featured);
+---
+
+<section aria-label="Projects">
+  <Controls total={projects.length} techFilters={techFilters} />
+  {
+    featured.length > 0 && (
+      <div class="featured" data-card-list>
+        {featured.map((project) => (
+          <ProjectCard project={project} variant="featured" />
+        ))}
+      </div>
+    )
+  }
+  <div class="grid" data-card-list>
+    {rest.map((project) => <ProjectCard project={project} variant="standard" />)}
+  </div>
+</section>
+
+<style>
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+  }
+</style>

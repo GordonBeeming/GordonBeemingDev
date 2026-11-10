@@ -1,0 +1,109 @@
+---
+import type { PageModel } from "../lib/schema";
+
+interface Props {
+  languages: PageModel["languages"];
+}
+
+const { languages } = Astro.props;
+---
+
+<div class="panel">
+  <div class="head">
+    <h2>Languages</h2>
+    <span class="hint">primary language per repo</span>
+  </div>
+  <div class="bar" role="img" aria-label="Share of projects by primary language">
+    {languages.map((lang) => <div class="seg" style={{ flexGrow: lang.count, background: lang.color }} />)}
+  </div>
+  <ul>
+    {
+      languages.map((lang) => (
+        <li>
+          <span class="swatch" style={{ background: lang.color }} aria-hidden="true" />
+          <span class="name">{lang.name}</span>
+          <span class="count">{lang.count}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <p>Private previews aren't counted until their repos are public.</p>
+</div>
+
+<style>
+  .panel {
+    flex: 1 1 380px;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .hint {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .bar {
+    display: flex;
+    gap: 3px;
+    height: 18px;
+    border-radius: 9px;
+    overflow: hidden;
+  }
+  .seg {
+    flex-shrink: 1;
+    flex-basis: 0;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px 20px;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    min-width: 0;
+  }
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex: none;
+  }
+  .name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .count {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

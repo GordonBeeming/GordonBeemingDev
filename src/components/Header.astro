@@ -1,0 +1,58 @@
+---
+---
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span>gordonbeeming<span class="tld">.dev</span></span>
+    </div>
+    <nav aria-label="Site">
+      <a class="tap" href="https://gordonbeeming.com" rel="noopener noreferrer">Blog</a>
+      <a class="tap" href="https://gordonbeeming.com/projects" rel="noopener noreferrer">Projects on the blog</a>
+      <a class="tap" href="https://github.com/GordonBeeming" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mark {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .tld {
+    color: var(--accent);
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    font-size: 15px;
+  }
+  nav a {
+    padding: 10px 0;
+  }
+</style>

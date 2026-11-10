@@ -1,0 +1,319 @@
+---
+import type { ProjectCardModel } from "../lib/schema";
+import FreshnessDot from "./FreshnessDot.astro";
+
+interface Props {
+  project: ProjectCardModel;
+  variant: "featured" | "standard";
+}
+
+const { project, variant } = Astro.props;
+const { stats } = project;
+const featured = variant === "featured";
+const deprecated = project.tier === 2;
+const starLabel = stats
+  ? `Star ${project.title} on GitHub (${stats.stars} ${stats.stars === 1 ? "star" : "stars"}, opens in a new tab)`
+  : "";
+
+function isExternal(href: string): boolean {
+  return href.startsWith("https://");
+}
+---
+
+<article
+  class:list={["card", variant]}
+  data-card
+  data-tech={JSON.stringify(project.techStack)}
+  data-stars={String(stats?.stars ?? 0)}
+  data-pushed={stats?.pushedAt ?? ""}
+  data-date={project.date}
+  data-tier={String(project.tier)}
+  data-title={project.title}
+  data-featured={String(project.featured)}
+>
+  {
+    featured ? (
+      <div class="row">
+        <span class="badges">
+          <span class="badge-featured">Featured</span>
+          {project.status && <span class:list={["status", { deprecated }]}>{project.status}</span>}
+        </span>
+        {stats &&
+          (project.githubUrl ? (
+            <a class="stars big star-link" href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={starLabel}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>{stats.stars}</span>
+            </a>
+          ) : (
+            <span class="stars big">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Stars">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>{stats.stars}</span>
+            </span>
+          ))}
+      </div>
+    ) : null
+  }
+  {
+    featured ? (
+      <h3>{project.title}</h3>
+    ) : (
+      <div class="row">
+        <h3>{project.title}</h3>
+        {stats &&
+          (project.githubUrl ? (
+            <a class="stars star-link" href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={starLabel}>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>{stats.stars}</span>
+            </a>
+          ) : (
+            <span class="stars">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Stars">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>{stats.stars}</span>
+            </span>
+          ))}
+        {project.status && <span class:list={["status", { deprecated }]}>{project.status}</span>}
+      </div>
+    )
+  }
+  <p class:list={["description", { clamp: !featured }]}>{project.description}</p>
+  <div class="tech">
+    {project.techStack.map((tech) => <span>{tech}</span>)}
+  </div>
+  {
+    stats && (
+      <div class="meta">
+        {stats.language && (
+          <span class="lang">
+            <span class="lang-dot" style={{ background: stats.language.color }} aria-hidden="true" />
+            {stats.language.name}
+          </span>
+        )}
+        <span class="release">{stats.release}</span>
+        <span>{stats.forksLabel}</span>
+        {featured && <span>{stats.issuesLabel}</span>}
+        <span class="ago">
+          <FreshnessDot freshness={stats.freshness} size={8} />
+          {stats.pushedAgo}
+        </span>
+      </div>
+    )
+  }
+  {
+    project.links.length > 0 && (
+      <div class="links">
+        {project.links.map((link) => (
+          <a class="tap" href={link.href} rel={isExternal(link.href) ? "noopener noreferrer" : undefined}>
+            {link.label} &rarr;
+          </a>
+        ))}
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .standard {
+    padding: 24px;
+    gap: 14px;
+  }
+  .featured {
+    border-top: 3px solid var(--accent);
+    padding: 28px;
+    gap: 16px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .badge-featured {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-soft-text);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    flex: none;
+  }
+  /* The link keeps the plain look of the count; the larger hit area comes from
+     padding that negative margins cancel, so the header row doesn't grow. */
+  .star-link {
+    color: var(--text);
+    min-height: 44px;
+    padding: 0 10px;
+    margin: -12px -10px -12px 0;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .star-link:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+    text-decoration: none;
+  }
+  .stars.big {
+    font-size: 15px;
+  }
+  h3 {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .standard h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .featured h3 {
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-soft-text);
+    flex: none;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .status.deprecated {
+    background: var(--warn-soft);
+    color: var(--warn-text);
+  }
+  .description {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+    flex: 1 1 auto;
+    overflow-wrap: anywhere;
+  }
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    /* A clamped box that flex-grows gets taller than four lines and shows a
+       sliver of the fifth, so the spare card height goes to a margin instead. */
+    flex: 0 0 auto;
+    margin-bottom: auto;
+  }
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tech span {
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--muted);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+  .standard .meta {
+    gap: 6px 14px;
+    padding-top: 14px;
+  }
+  .featured .meta {
+    gap: 6px 16px;
+    padding-top: 16px;
+  }
+  .lang,
+  .ago {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ago {
+    margin-left: auto;
+  }
+  .lang-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .standard .release {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .featured .release {
+    overflow-wrap: anywhere;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .standard .links {
+    gap: 0 20px;
+  }
+  .featured .links {
+    gap: 4px 20px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+    }
+    .card:hover {
+      transform: none;
+    }
+  }
+</style>

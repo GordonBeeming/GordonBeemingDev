@@ -1,0 +1,42 @@
+---
+interface Props {
+  buildDate: string;
+}
+
+const { buildDate } = Astro.props;
+---
+
+<footer>
+  <div class="inner">
+    <div class="note">Last build {buildDate} &middot; project list from the blog, stats from the GitHub API</div>
+    <nav aria-label="Footer">
+      <a class="tap" href="https://gordonbeeming.com" rel="noopener noreferrer">gordonbeeming.com</a>
+      <a class="tap" href="https://github.com/GordonBeeming" rel="noopener noreferrer">github.com/GordonBeeming</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+  }
+  .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 24px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 32px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .note {
+    font-family: var(--font-mono);
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+</style>
