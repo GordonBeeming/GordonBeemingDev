@@ -1,0 +1,29 @@
+---
+import type { Freshness } from "../lib/schema";
+
+interface Props {
+  freshness: Freshness;
+  size: number;
+}
+
+const { freshness, size } = Astro.props;
+---
+
+<span class={`dot fresh-${freshness}`} style={{ width: `${size}px`, height: `${size}px` }} aria-hidden="true"></span>
+
+<style>
+  .dot {
+    display: inline-block;
+    flex: none;
+    border-radius: 50%;
+  }
+  .fresh-active {
+    background: var(--fresh-active);
+  }
+  .fresh-steady {
+    background: var(--fresh-steady);
+  }
+  .fresh-quiet {
+    background: var(--fresh-quiet);
+  }
+</style>

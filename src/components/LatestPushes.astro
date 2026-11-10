@@ -1,0 +1,100 @@
+---
+import type { PageModel } from "../lib/schema";
+import FreshnessDot from "./FreshnessDot.astro";
+
+interface Props {
+  pushes: PageModel["latestPushes"];
+}
+
+const { pushes } = Astro.props;
+---
+
+<div class="panel">
+  <div class="head">
+    <h2>Latest pushes</h2>
+    <span class="hint">git log</span>
+  </div>
+  <ul>
+    {
+      pushes.map((push) => (
+        <li>
+          <FreshnessDot freshness={push.freshness} size={8} />
+          <span class="title">{push.title}</span>
+          <span class="release">{push.release === "no releases" ? "" : push.release}</span>
+          <span class="ago">{push.pushedAgo}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .panel {
+    flex: 1 1 380px;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .hint {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .title {
+    font-weight: 600;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .release,
+  .ago {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .release {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ago {
+    flex: none;
+    width: 76px;
+    text-align: right;
+  }
+</style>

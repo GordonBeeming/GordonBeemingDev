@@ -1,0 +1,118 @@
+---
+import type { PageModel, SortKey } from "../lib/schema";
+
+interface Props {
+  total: number;
+  techFilters: PageModel["techFilters"];
+}
+
+const { total, techFilters } = Astro.props;
+
+const sorts: { key: SortKey; label: string }[] = [
+  { key: "stars", label: "Stars" },
+  { key: "pushed", label: "Recently pushed" },
+  { key: "date", label: "Newest" },
+];
+const filters = [{ label: "All", count: total }, ...techFilters];
+---
+
+<div class="top">
+  <div class="title">
+    <h2>All projects</h2>
+    <div class="count" data-count aria-live="polite">{total} of {total}</div>
+  </div>
+  <div class="sorts" role="group" aria-label="Sort projects">
+    <span class="sort-label">Sort</span>
+    {
+      sorts.map((sort) => (
+        <button type="button" class="btn" data-sort={sort.key} aria-pressed={sort.key === "stars" ? "true" : "false"}>
+          {sort.label}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<div class="chips" role="group" aria-label="Filter by tech">
+  {
+    filters.map((filter) => (
+      <button
+        type="button"
+        class="btn chip"
+        data-filter={filter.label}
+        aria-pressed={filter.label === "All" ? "true" : "false"}
+      >
+        <span>{filter.label}</span>
+        <span class="n">{filter.count}</span>
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 32px;
+  }
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .count {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .sorts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .sort-label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .btn[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .chip {
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .n {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    opacity: 0.8;
+  }
+</style>

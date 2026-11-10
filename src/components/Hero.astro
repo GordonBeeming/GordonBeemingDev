@@ -1,0 +1,100 @@
+---
+import type { PageModel } from "../lib/schema";
+
+interface Props {
+  tiles: PageModel["tiles"];
+}
+
+const { tiles } = Astro.props;
+---
+
+<section class="hero">
+  <div class="inner">
+    <div class="intro">
+      <div class="prompt">~/projects $ ls --sort=stars</div>
+      <h1>Things I've built</h1>
+      <p>
+        Mostly macOS apps and developer tools I wrote because I wanted them myself. The list comes from my blog and
+        the stats from GitHub, and the page rebuilds daily.
+      </p>
+    </div>
+    <div class="tiles">
+      {
+        tiles.map((tile) => (
+          <div class="tile">
+            <div class="value">{tile.value}</div>
+            <div class="label">{tile.label}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 780px;
+  }
+  .prompt {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: var(--muted);
+    max-width: 640px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 16px;
+  }
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .value {
+    font-family: var(--font-mono);
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .label {
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>
